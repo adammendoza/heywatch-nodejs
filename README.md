@@ -137,6 +137,7 @@ hw.delete("video", 9662090, function(ok) {
 hw.create("preview/thumbnails", {media_id: 9662142, number: 6, s3_directive: "s3://accesskey:secretkey@mybucket/thumbnails/", ping_url: "http://site.com/ping/heywatch/thumbs"}, function(ok) {
   // OK
 })
+```
 
 ### Errors ###
 
