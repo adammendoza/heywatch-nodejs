@@ -1,0 +1,27 @@
+{
+  "name": "heywatch",
+  "version": "1.0.0",
+  "homepage": "http://www.heywatchencoding.com",
+  "description": "NodeJS Module to encode videos with HeyWatch, a Cloud Video Encoding Service",
+  "main": "heywatch.js",
+  "dependencies": {
+    "restify": "~2.5.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/HeyWatch/heywatch-nodejs.git"
+  },
+  "engines": {
+    "node": ">=0.8"
+  },
+  "keywords": [
+    "video",
+    "encoding",
+    "cloud",
+    "transcoding",
+    "heywatch",
+    "h264"
+  ],
+  "author": "Bruno Celeste",
+  "license": "MIT"
+}
