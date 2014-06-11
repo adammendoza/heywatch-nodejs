@@ -5,7 +5,7 @@
   "description": "NodeJS Module to encode videos with HeyWatch, a Cloud Video Encoding Service",
   "main": "heywatch.js",
   "dependencies": {
-    "restify": "~2.5.1"
+    "restify": "~2.8.1"
   },
   "repository": {
     "type": "git",
