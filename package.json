@@ -1,6 +1,6 @@
 {
   "name": "heywatch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "http://www.heywatchencoding.com",
   "description": "NodeJS Module to encode videos with HeyWatch, a Cloud Video Encoding Service",
   "main": "heywatch.js",
