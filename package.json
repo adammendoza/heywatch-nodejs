@@ -1,12 +1,9 @@
 {
   "name": "heywatch",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "homepage": "http://www.heywatchencoding.com",
   "description": "NodeJS Module to encode videos with HeyWatch, a Cloud Video Encoding Service",
   "main": "heywatch.js",
-  "dependencies": {
-    "restify": "~2.8.1"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/HeyWatch/heywatch-nodejs.git"

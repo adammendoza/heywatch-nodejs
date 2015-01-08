@@ -1,87 +1,58 @@
 var assert = require('assert');
-var restify = require('restify');
-var HEYWATCH_URL = "https://heywatch.com"
+var http = require('http');
+var https = require('https');
+var url = require('url');
+
+var USER_AGENT = 'HeyWatch/2.0.0 (NodeJS)';
 
 module.exports = {
 
-  cli: function(user, passwd) {
-    this.jsonClient = this.createJsonClient(user, passwd);
-    this.stringClient = this.createStringClient(user, passwd);
+  submit: function(configContent, apiKey, callback) {
+    heywatchURL = url.parse(process.env.HEYWATCH_URL || 'https://heywatch.com');
 
-    return this;
-  },
-
-  account: function(callback) {
-    this.request("/account", {method: "get"}, callback);
-  },
-
-  info: function(resource, id, callback) {
-    this.request("/"+resource+"/"+id, {method: "get"}, callback);
-  },
-
-  all: function(resource, callback) {
-    this.request("/"+resource, {method: "get"}, callback);
-  },
-
-  create: function(resource, params, callback) {
-    this.request("/"+resource, {method: "post", params: params}, callback);
-  },
-
-  update: function(resource, id, params, callback) {
-    this.request("/"+resource+"/"+id, {method: "put", params: params}, callback);
-  },
-
-  delete: function(resource, id, callback) {
-    this.request("/"+resource+"/"+id, {method: "delete"}, callback);
-  },
-
-  request: function(resource, opts, callback) {
-    if(opts.method == "get") {
-      this.jsonClient.get(resource, function(err, req, res, obj) {
-        assert.ifError(err);
-        callback(obj);
-      });
-    } else if(opts.method == "delete") {
-      this.jsonClient.del(resource, function(err, req, res, obj) {
-        assert.ifError(err);
-        callback(true);
-      });
-    } else if(opts.method == "post") {
-      if(typeof(opts.params) == "string") {
-        this.stringClient.post(resource, opts.params, function(err, req, res, data) {
-          assert.ifError(err);
-          callback(JSON.parse(data));
-        });
-      } else {
-        this.jsonClient.post(resource, opts.params, function(err, req, res, obj) {
-          assert.ifError(err);
-          callback(obj);
-        });
-      }
-    } else if(opts.method == "put") {
-      this.jsonClient.put(resource, opts.params, function(err, req, res, obj) {
-        assert.ifError(err);
-        callback(true)
-      });
+    if(!apiKey) {
+      apiKey = process.env.HEYWATCH_API_KEY;
     }
-  },
 
-  createJsonClient: function(user, passwd) {
-    var client = restify.createJsonClient({
-      url: HEYWATCH_URL
+    var reqOptions = {
+      hostname: heywatchURL.hostname,
+      port: heywatchURL.port || (heywatchURL.protocol == 'https:' ? 443 : 80),
+      path: '/api/v1/job',
+      method: 'POST',
+      auth: apiKey+':',
+      headers: {
+        'User-Agent': USER_AGENT,
+        'Content-Type': 'text/plain',
+        'Accept': 'application/json',
+        'Content-Length': configContent.length
+      }
+    };
+
+    var req = (heywatchURL.protocol == 'https:' ? https : http).request(reqOptions, function(res) {
+      res.setEncoding('utf8');
+      var responseString = '';
+
+      res.on('data', function(data) {
+        responseString += data;
+      });
+
+      res.on('end', function () {
+        var resultObject = JSON.parse(responseString);
+        if(callback) {
+          callback(resultObject);
+        }
+      });
     });
 
-    client.basicAuth(user, passwd);
-    return client;
-  },
-
-  createStringClient: function(user, passwd) {
-    var client = restify.createStringClient({
-      url: HEYWATCH_URL,
-      accept: "application/json"
+    req.on('error', function(e) {
+      console.log('problem with request: ' + e.message);
+      if(callback) {
+        callback(null);
+      }
     });
 
-    client.basicAuth(user, passwd);
-    return client;
+    req.write(configContent);
+    req.end();
   }
+
 }
